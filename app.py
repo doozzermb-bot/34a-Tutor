@@ -1,4 +1,4 @@
-import streamlit as st
+ import streamlit as st
 from groq import Groq
 
 st.set_page_config(page_title="34a Tutor", page_icon="🛡️")
@@ -6,7 +6,8 @@ st.set_page_config(page_title="34a Tutor", page_icon="🛡️")
 st.title("🛡️ Sachkunde § 34a GewO Tutor")
 st.caption("Dein KI-Lernbegleiter für das Bewachungsgewerbe")
 
-client = Groq (api_key="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")
+# API Client mit dem korrekten Schlüssel initialisieren
+client = Groq(api_key="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")
 
 SYSTEM_PROMPT = """
 Du bist "34a-Tutor", ein Fachdozent für die Sachkundeprüfung nach § 34a GewO.
@@ -37,8 +38,7 @@ if user_input := st.chat_input("Deine Antwort oder Frage..."):
     with st.chat_message("assistant"):
         try:
             response = client.chat.completions.create(
-                model="llama-3-70b-8192",
-            
+                model="llama3-8b-8192",
                 messages=st.session_state.messages,
                 temperature=0.6
             )
