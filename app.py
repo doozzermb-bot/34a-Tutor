@@ -1,4 +1,3 @@
-import os
 import streamlit as st
 from groq import Groq
 
@@ -7,15 +6,8 @@ st.set_page_config(page_title="34a Tutor", page_icon="🛡️")
 st.title("🛡️ Sachkunde § 34a GewO Tutor")
 st.caption("Dein KI-Lernbegleiter für das Bewachungsgewerbe")
 
-# API-Key direkt aus den Secrets holen und bereinigen
-api_key = st.secrets.get("GROQ_API_KEY", "").strip()
-
-if not api_key or api_key == "gsk_dein_kopierter_schluessel_aus_schritt_1":
-    st.error("🔑 Bitte trage deinen gültigen GROQ_API_KEY in den Streamlit-Secrets ein!")
-    st.stop()
-
-# Client explizit mit dem ausgelesenen Key initialisieren
-client = Groq(api_key=api_key)
+# Füge hier deinen echten Groq-API-Key zwischen den Anführungszeichen ein:
+client = Groq(api_key="gsk_HIER_DEIN_ECHTER_GROQ_KEY")
 
 SYSTEM_PROMPT = """
 Du bist "34a-Tutor", ein Fachdozent für die Sachkundeprüfung nach § 34a GewO.
@@ -55,4 +47,4 @@ if user_input := st.chat_input("Deine Antwort oder Frage..."):
             st.session_state.messages.append({"role": "assistant", "content": reply})
         except Exception as e:
             st.error(f"Fehler bei der Verbindung zu Groq: {e}")
-                                     
+            
