@@ -6,7 +6,7 @@ st.set_page_config(page_title="34a Tutor", page_icon="🛡️")
 st.title("🛡️ Sachkunde § 34a GewO Tutor")
 st.caption("Dein KI-Lernbegleiter für das Bewachungsgewerbe")
 
-client = Groq (api_key="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"
+client = Groq (api_key="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")
 
 SYSTEM_PROMPT = """
 Du bist "34a-Tutor", ein Fachdozent für die Sachkundeprüfung nach § 34a GewO.
