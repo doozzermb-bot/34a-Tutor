@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 from groq import Groq
 
@@ -6,7 +7,15 @@ st.set_page_config(page_title="34a Tutor", page_icon="🛡️")
 st.title("🛡️ Sachkunde § 34a GewO Tutor")
 st.caption("Dein KI-Lernbegleiter für das Bewachungsgewerbe")
 
-client = Groq(api_key=st.secrets["GROQ_API_KEY"])
+# API-Key direkt aus den Secrets holen und bereinigen
+api_key = st.secrets.get("GROQ_API_KEY", "").strip()
+
+if not api_key or api_key == "gsk_dein_kopierter_schluessel_aus_schritt_1":
+    st.error("🔑 Bitte trage deinen gültigen GROQ_API_KEY in den Streamlit-Secrets ein!")
+    st.stop()
+
+# Client explizit mit dem ausgelesenen Key initialisieren
+client = Groq(api_key=api_key)
 
 SYSTEM_PROMPT = """
 Du bist "34a-Tutor", ein Fachdozent für die Sachkundeprüfung nach § 34a GewO.
@@ -35,13 +44,15 @@ if user_input := st.chat_input("Deine Antwort oder Frage..."):
         st.write(user_input)
 
     with st.chat_message("assistant"):
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=st.session_state.messages,
-            temperature=0.6
-        )
-        reply = response.choices[0].message.content
-        st.write(reply)
-        
-    st.session_state.messages.append({"role": "assistant", "content": reply})
-      
+        try:
+            response = client.chat.completions.create(
+                model="llama-3.3-70b-versatile",
+                messages=st.session_state.messages,
+                temperature=0.6
+            )
+            reply = response.choices[0].message.content
+            st.write(reply)
+            st.session_state.messages.append({"role": "assistant", "content": reply})
+        except Exception as e:
+            st.error(f"Fehler bei der Verbindung zu Groq: {e}")
+                                     
