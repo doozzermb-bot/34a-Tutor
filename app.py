@@ -43,7 +43,8 @@ if prompt := st.chat_input("Deine Antwort oder Frage..."):
                 "Content-Type": "application/json",
             },
             json={
-                "model": "deepseek/deepseek-r1:free",
+                "model": "google/gemini-2.0-flash-exp:free",
+
                 "messages": st.session_state.messages,
             }
         )
