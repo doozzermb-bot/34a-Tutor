@@ -1,6 +1,6 @@
 import os
 import streamlit as st
-from groq import Groq
+import requests
 
 st.set_page_config(page_title="34a Tutor", page_icon="🛡️")
 
@@ -8,7 +8,6 @@ st.title("🛡️ Sachkunde § 34a GewO Tutor")
 st.caption("Dein KI-Lernbegleiter für das Bewachungsgewerbe")
 
 api_key = st.secrets.get("GROQ_API_KEY") or os.environ.get("GROQ_API_KEY")
-client = Groq(api_key=api_key)
 
 SYSTEM_PROMPT = """
 Du bist „34a-Tutor“, ein Fachdozent für die Sachkundeprüfung nach § 34a GewO.
@@ -23,7 +22,7 @@ Deine Aufgabe:
 if "messages" not in st.session_state:
     st.session_state.messages = [
         {"role": "system", "content": SYSTEM_PROMPT},
-        {"role": "assistant", "content": "Hallo Marc! Bereit für die Vorbereitung? Sollen wir ein bestimmtes Thema durchgehen (z. B. BGB-Notrechte) oder direkt eine Prüfungsfrage starten?"}
+        {"role": "assistant", "content": "Hallo! Bereit für die Vorbereitung? Sollen wir ein bestimmtes Thema durchgehen (z. B. BGB-Notrechte) oder direkt eine Prüfungsfrage starten?"}
     ]
 
 for msg in st.session_state.messages:
@@ -37,14 +36,27 @@ if prompt := st.chat_input("Deine Antwort oder Frage..."):
         st.write(prompt)
 
     try:
-        response = client.chat.completions.create(
-            "llama-3.1-8b-instant",
-            messages=st.session_state.messages
+        response = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": "llama-3.1-8b-instant",
+                "messages": st.session_state.messages
+            }
         )
-        reply = response.choices[0].message.content
-        st.session_state.messages.append({"role": "assistant", "content": reply})
-        with st.chat_message("assistant"):
-            st.write(reply)
+        data = response.json()
+        
+        if "choices" in data:
+            reply = data["choices"][0]["message"]["content"]
+            st.session_state.messages.append({"role": "assistant", "content": reply})
+            with st.chat_message("assistant"):
+                st.write(reply)
+        else:
+            st.error(f"Fehler von Groq: {data.get('error', {}).get('message', data)}")
+            
     except Exception as e:
         st.error(f"Fehler bei der Verbindung zu Groq: {e}")
         
