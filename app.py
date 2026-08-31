@@ -38,7 +38,7 @@ if prompt := st.chat_input("Deine Antwort oder Frage..."):
 
     try:
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="llama-3.1-8b-instant",
             messages=st.session_state.messages
         )
         reply = response.choices[0].message.content
