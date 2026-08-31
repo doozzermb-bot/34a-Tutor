@@ -47,4 +47,3 @@ if prompt := st.chat_input("Deine Antwort oder Frage..."):
             st.write(reply)
     except Exception as e:
         st.error(f"Fehler bei der Verbindung zu Groq: {e}")
-        
