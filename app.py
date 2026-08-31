@@ -8,7 +8,7 @@ st.title("🛡️ Sachkunde § 34a GewO Tutor")
 st.caption("Dein KI-Lernbegleiter für das Bewachungsgewerbe")
 
 api_key = st.secrets.get("GROQ_API_KEY") or os.environ.get("GROQ_API_KEY")
-client = Groq(api_key="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")
+client = Groq(api_key="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")
 
 SYSTEM_PROMPT = """
 Du bist „34a-Tutor“, ein Fachdozent für die Sachkundeprüfung nach § 34a GewO.
