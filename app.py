@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 from groq import Groq
 
@@ -6,11 +7,11 @@ st.set_page_config(page_title="34a Tutor", page_icon="🛡️")
 st.title("🛡️ Sachkunde § 34a GewO Tutor")
 st.caption("Dein KI-Lernbegleiter für das Bewachungsgewerbe")
 
-# API Client mit dem korrekten Schlüssel initialisieren
-client = Groq(api_key="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")
+api_key = st.secrets.get("GROQ_API_KEY") or os.environ.get("GROQ_API_KEY")
+client = Groq(api_key=api_key)
 
 SYSTEM_PROMPT = """
-Du bist "34a-Tutor", ein Fachdozent für die Sachkundeprüfung nach § 34a GewO.
+Du bist „34a-Tutor“, ein Fachdozent für die Sachkundeprüfung nach § 34a GewO.
 Deine Aufgabe:
 - Prüfe den Nutzer interaktiv ab (BGB, StGB, GewO, DGUV V23, Deeskalation).
 - Stelle immer nur EINE Prüfungsfrage auf einmal.
@@ -30,13 +31,20 @@ for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):
             st.write(msg["content"])
 
-if user_input := st.chat_input("Deine Antwort oder Frage..."):
-    st.session_state.messages.append({"role": "user", "content": user_input})
+if prompt := st.chat_input("Deine Antwort oder Frage..."):
+    st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
-        st.write(user_input)
+        st.write(prompt)
 
-    with st.chat_message("assistant"):
-        try:
-            response = client.chat.completions.create(
-                model="llama3-8b-8192",
-                messages=st.sess
+    try:
+        response = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=st.session_state.messages
+        )
+        reply = response.choices[0].message.content
+        st.session_state.messages.append({"role": "assistant", "content": reply})
+        with st.chat_message("assistant"):
+            st.write(reply)
+    except Exception as e:
+        st.error(f"Fehler bei der Verbindung zu Groq: {e}")
+        
