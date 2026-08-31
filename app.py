@@ -1,14 +1,18 @@
 import os
 import streamlit as st
-from groq import Groq
+from openai import OpenAI
 
 st.set_page_config(page_title="34a Tutor", page_icon="🛡️")
 
 st.title("🛡️ Sachkunde § 34a GewO Tutor")
 st.caption("Dein KI-Lernbegleiter für das Bewachungsgewerbe")
 
-api_key = st.secrets.get("GROQ_API_KEY") or os.environ.get("GROQ_API_KEY")
-client = Groq(api_key="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")
+api_key = st.secrets.get("OPENROUTER_API_KEY") or os.environ.get("OPENROUTER_API_KEY")
+
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=api_key,
+)
 
 SYSTEM_PROMPT = """
 Du bist „34a-Tutor“, ein Fachdozent für die Sachkundeprüfung nach § 34a GewO.
@@ -38,7 +42,7 @@ if prompt := st.chat_input("Deine Antwort oder Frage..."):
 
     try:
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="meta-llama/llama-3.3-70b-instruct:free",
             messages=st.session_state.messages
         )
         reply = response.choices[0].message.content
@@ -46,4 +50,5 @@ if prompt := st.chat_input("Deine Antwort oder Frage..."):
         with st.chat_message("assistant"):
             st.write(reply)
     except Exception as e:
-        st.error(f"Fehler bei der Verbindung zu Groq: {e}")
+        st.error(f"Fehler bei der Verbindung: {e}")
+        
