@@ -47,4 +47,4 @@ if user_input := st.chat_input("Deine Antwort oder Frage..."):
             st.session_state.messages.append({"role": "assistant", "content": reply})
         except Exception as e:
             st.error(f"Fehler bei der Verbindung zu Groq: {e}")
-            
+
