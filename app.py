@@ -39,12 +39,4 @@ if user_input := st.chat_input("Deine Antwort oder Frage..."):
         try:
             response = client.chat.completions.create(
                 model="llama3-8b-8192",
-                messages=st.session_state.messages,
-                temperature=0.6
-            )
-            reply = response.choices[0].message.content
-            st.write(reply)
-            st.session_state.messages.append({"role": "assistant", "content": reply})
-        except Exception as e:
-            st.error(f"Fehler bei der Verbindung zu Groq: {e}")
-
+                messages=st.sess
